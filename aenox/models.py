@@ -6,7 +6,7 @@ from datetime import date
 class UserStats:
     user_id: int
     coins: int
-    claimed: date
+    claimed: datetime
     streak: int
     max_streak: int
     pickaxe_level: int
