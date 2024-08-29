@@ -65,8 +65,8 @@ class AenoXAPI:
 
         return response.json()
 
-    def get_user_stats(self, user_id: int):
-        """Get the user's stats.
+    def get_user_stats(self, user_id: int) -> UserStats:
+        """Get the user's level stats.
 
         Parameters
         ----------
@@ -79,7 +79,7 @@ class AenoXAPI:
             The user was not found.
         """
         data = self._get(f"user/{user_id}")
-        return data
+        return UserStats(user_id, **data)
 
     def get_guild_stats(self, guild_id: int):
         """Get the user's stats.

@@ -6,20 +6,17 @@ from datetime import date
 class UserStats:
     user_id: int
     coins: int
-    allTimeMessages: int
-    cooldownMiner: date
-    cooldownSmelter: date
-    dailyClaimed: date
-    dailyStreak: int
-    historyCoins: []
-    historyMessages: []
-    inventory: []
+    claimed: date
+    streak: int
+    max_streak: int
+    pickaxe_level: int
+    smelter_level: int
     luck: int
-    maxInventorySize: int
-    messages: int
-    pickaxeLevel: int
     shields: int
-    smelterLevel: int
+    cooldown_pickaxe: date
+    cooldown_smelter: date
+    maxInventorySize: int
+    inventory: []
 
 
 @dataclass
