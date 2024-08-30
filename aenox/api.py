@@ -81,7 +81,7 @@ class AenoXAPI:
         data = self._get(f"user/{user_id}")
         return UserStats(user_id, **data)
 
-    def get_guild_stats(self, guild_id: int):
+    def get_guild_stats(self, guild_id: int) -> GuildStats:
         """Get the user's stats.
 
         Parameters
@@ -95,4 +95,4 @@ class AenoXAPI:
             The guild was not found.
         """
         data = self._get(f"guild/{guild_id}")
-        return data
+        return GuildStats(guild_id, **data)
