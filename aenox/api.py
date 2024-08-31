@@ -5,7 +5,7 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound, CooldownError
+from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound, CooldownError, NoMoreCreditsAvailable
 from .models import UserStats, GuildStats
 
 
@@ -58,6 +58,8 @@ class AenoXAPI:
                 raise UserNotFound()
             elif "guild" in message.lower():
                 raise GuildNotFound
+            elif "credits" in message.lower():
+                raise NoMoreCreditsAvailable
             raise NotFound()
 
         if stream:

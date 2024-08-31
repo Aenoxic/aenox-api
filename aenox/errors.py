@@ -43,3 +43,10 @@ class NoGuildAccess(AenoXError):
 
     def __init__(self):
         super().__init__("You are not a member of this guild.")
+
+
+class NoMoreCreditsAvailable(AenoXError):
+    """Raised when you do not have enough credits for this operation."""
+
+    def __init__(self):
+        super().__init__("No more credits. Check /api on Discord.")
