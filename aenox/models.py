@@ -9,7 +9,7 @@ class UserStats:
     coins: int
     """Returns the coins of the user."""
     claimed: datetime
-    """Returns the last datetime, when the user claimed his daily coins."""
+    """Returns the last datetime, when the user claimed his daily coins. Returns 'Never', when the user never claimed his daily coins before."""
     streak: int
     """Returns the user's current daily streak."""
     max_streak: int

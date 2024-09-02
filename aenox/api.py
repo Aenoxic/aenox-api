@@ -50,7 +50,7 @@ class AenoXAPI:
 
     def _get(self, endpoint: str, stream: bool = False):
         response = self._httpx_client.get(
-            f"http://api.aenoxic.de:52461/aenox/v1/{endpoint}", headers=self._header
+            f"https://api.aenox.xyz/v1/{endpoint}", headers=self._header
         )
 
         if response.status_code == 401:
@@ -97,12 +97,17 @@ class AenoXAPI:
         def parse_datetime(date_str: str) -> datetime:
             try:
                 return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
+            except (ValueError, TypeError):
                 return None
 
-        data['claimed'] = parse_datetime(data.get('claimed', ''))
-        data['cooldown_pickaxe'] = parse_datetime(data.get('cooldown_pickaxe', ''))
-        data['cooldown_smelter'] = parse_datetime(data.get('cooldown_smelter', ''))
+        # Überprüfen, ob 'claimed' den Wert 0 hat
+        if data.get('claimed') == 0:
+            data['claimed'] = "Never"
+        else:
+            data['claimed'] = parse_datetime(str(data.get('claimed', '')))
+
+        data['cooldown_pickaxe'] = parse_datetime(str(data.get('cooldown_pickaxe', '')))
+        data['cooldown_smelter'] = parse_datetime(str(data.get('cooldown_smelter', '')))
 
         if "_id" in data:
             del data['_id']
