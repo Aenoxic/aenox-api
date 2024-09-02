@@ -14,23 +14,31 @@ def _stats_dict(data: dict[str, int]) -> dict[date, int]:
 
 
 class AenoXAPI:
-    def __init__(self, api_key: str | None = None, httpx_client: httpx.Client | None = None):
-        self._httpx_client: httpx.Client | None = httpx_client
+    """A class to interact with the API of AenoX.
 
-        if httpx_client is None:
+    Parameters
+    ----------
+    api_key:
+        The API key to use. You can get a key by executing /api at the bot.
+
+    Raises
+    ------
+    InvalidAPIKey:
+        Raised when an invalid API key is provided.
+    """
+    def __init__(self, api_key: str):
+        self.httpx_client: httpx_client = None
+        self._httpx_client: httpx.Client | None = self.httpx_client
+
+        if self.httpx_client is None:
             self._httpx_client = httpx.Client()
-        if api_key is None:
-            load_dotenv()
-            api_key = os.getenv("AENOX_KEY")
-            if api_key is None:
-                raise InvalidAPIKey(
-                    "Please provide an API key or set the API_KEY environment variable."
-                )
 
         self._header = {"key": api_key, "accept": "application/json"}
 
-    def test(self):
-        print("Success!")
+    def test(self) -> str:
+        """Check if all worked. Returns "Success!" if it is installed correctly
+        """
+        return "Success!"
 
     @overload
     def _get(self, endpoint: str) -> dict:
@@ -79,9 +87,26 @@ class AenoXAPI:
         ------
         UserNotFound:
             The user was not found.
+        NoMoreCreditsAvailable:
+            No more credits. Check /api on Discord.
+        CooldownError:
+            You are on cooldown.
         """
         data = self._get(f"user/{user_id}")
-        return UserStats(user_id, **data)
+
+        def parse_datetime(date_str: str) -> datetime:
+            try:
+                return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                return None
+
+        data['claimed'] = parse_datetime(data.get('claimed', ''))
+        data['cooldown_pickaxe'] = parse_datetime(data.get('cooldown_pickaxe', ''))
+        data['cooldown_smelter'] = parse_datetime(data.get('cooldown_smelter', ''))
+
+        if "_id" in data:
+            del data['_id']
+        return UserStats(str(user_id), **data)
 
     def get_guild_stats(self, guild_id: int) -> GuildStats:
         """Get the user's stats.
@@ -89,12 +114,18 @@ class AenoXAPI:
         Parameters
         ----------
         guild_id:
-            The user's ID.
+            The guild's ID.
 
         Raises
         ------
         GuildNotFound:
             The guild was not found.
+        NoMoreCreditsAvailable:
+            No more credits. Check /api on Discord.
+        CooldownError:
+            You are on cooldown.
         """
         data = self._get(f"guild/{guild_id}")
-        return GuildStats(guild_id, **data)
+        if "_id" in data:
+            del data['_id']
+        return GuildStats(str(guild_id), **data)
