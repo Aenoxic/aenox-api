@@ -1,15 +1,14 @@
 class AenoXError(Exception):
-    """Base exception class for all Noxii exceptions."""
+    """Base exception class for all AenoX exceptions."""
     pass
 
 
 class InvalidAPIKey(AenoXError):
-    """Raised when an invalid API key is provided or if no key was found
-    in the environment variables.
+    """Raised when an invalid API key is provided.
     """
 
-    def __init__(self, msg: str | None = None):
-        super().__init__(msg or "Invalid API key.")
+    def __init__(self):
+        super().__init__("Invalid API key provided.")
 
 
 class NotFound(AenoXError):
