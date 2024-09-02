@@ -1,3 +1,8 @@
+# AenoX API
+[![](https://img.shields.io/pypi/v/aenox.svg?style=for-the-badge&logo=pypi&color=yellow&logoColor=white)](https://pypi.org/project/aenox/)
+[![](https://img.shields.io/pypi/l/aenox?style=for-the-badge&color=5865F2)](https://github.com/aenoxic/aenox-api/blob/main/LICENSE)
+[![](https://img.shields.io/readthedocs/aenox-api?style=for-the-badge)](https://aenox-api.readthedocs.io/en/latest/)
+
 ## ⚙️ Installation
 Python 3.10 or higher is required
 ```
