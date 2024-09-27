@@ -8,7 +8,7 @@ class UserStats:
     """Returns the ID of the user."""
     coins: int
     """Returns the coins of the user."""
-    claimed: datetime
+    claimed: datetime | str
     """Returns the last datetime, when the user claimed his daily coins. Returns 'Never', when the user never claimed his daily coins before."""
     streak: int
     """Returns the user's current daily streak."""
