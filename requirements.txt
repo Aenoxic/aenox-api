@@ -2,3 +2,5 @@ python-dotenv
 pymongo
 requests
 httpx
+build
+twine

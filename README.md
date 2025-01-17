@@ -12,16 +12,12 @@ pip install aenox
 ## 🚀 Example Usage
 To be able to perform your API query properly, replace `[YOUR_API_KEY]` with a valid API key.
 
-To get an API Key, [invite the bot](https://discord.com/oauth2/authorize?client_id=123) (currently not available) to your discord server and simply run `/api`.
-
 ### Example
 
 ```python
 from aenox import AenoXAPI
 
 api = AenoXAPI(api_key="[YOUR_API_KEY]")
-
-print(api.test())  # Returns "Success!" if it is installed correctly
 ```
 
 

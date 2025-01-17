@@ -5,8 +5,10 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound, CooldownError, NoMoreCreditsAvailable
-from .models import UserStats, GuildStats
+from .errors import InvalidAPIKey, NotFound, UserNotFound, CooldownError, NoMoreCreditsAvailable
+from .models import UserStats
+
+BASE_URL = 'https://api.aenox.xyz/v1/'
 
 
 def _stats_dict(data: dict[str, int]) -> dict[date, int]:
@@ -19,26 +21,24 @@ class AenoXAPI:
     Parameters
     ----------
     api_key:
-        The API key to use. You can get a key by executing /api at the bot.
+        The API key to use.
+    httpx_client:
+        An existing httpx client to use.
 
     Raises
     ------
     InvalidAPIKey:
         Raised when an invalid API key is provided.
     """
-    def __init__(self, api_key: str):
-        self.httpx_client: httpx_client = None
-        self._httpx_client: httpx.Client | None = self.httpx_client
+    def __init__(self, api_key: str, httpx_client: httpx.Client | None = None):
+        self._httpx_client: httpx.Client | None = httpx_client
 
-        if self.httpx_client is None:
+        if httpx_client is None:
             self._httpx_client = httpx.Client()
+        if api_key is None:
+            raise InvalidAPIKey
 
         self._header = {"key": api_key, "accept": "application/json"}
-
-    def test(self) -> str:
-        """Check if all worked. Returns "Success!" if it is installed correctly
-        """
-        return "Success!"
 
     @overload
     def _get(self, endpoint: str) -> dict:
@@ -49,14 +49,10 @@ class AenoXAPI:
         ...
 
     def _get(self, endpoint: str, stream: bool = False):
-        response = self._httpx_client.get(
-            f"https://api.aenox.xyz/v1/{endpoint}", headers=self._header
-        )
+        response = self._httpx_client.get(BASE_URL + endpoint, headers=self._header)
 
         if response.status_code == 401:
             raise InvalidAPIKey()
-        elif response.status_code == 403:
-            raise NoGuildAccess()
         elif response.status_code == 429:
             raise CooldownError
         elif response.status_code == 404:
@@ -64,8 +60,6 @@ class AenoXAPI:
             message = response.get("detail")
             if "user" in message.lower() or "member" in message.lower():
                 raise UserNotFound()
-            elif "guild" in message.lower():
-                raise GuildNotFound
             elif "credits" in message.lower():
                 raise NoMoreCreditsAvailable
             raise NotFound()
@@ -75,7 +69,7 @@ class AenoXAPI:
 
         return response.json()
 
-    def get_user_stats(self, user_id: int) -> UserStats:
+    def get_user(self, user_id: int) -> UserStats:
         """Get the user's level stats.
 
         Parameters
@@ -106,31 +100,6 @@ class AenoXAPI:
         else:
             data['claimed'] = parse_datetime(str(data.get('claimed', '')))
 
-        data['cooldown_pickaxe'] = parse_datetime(str(data.get('cooldown_pickaxe', '')))
-        data['cooldown_smelter'] = parse_datetime(str(data.get('cooldown_smelter', '')))
-
         if "_id" in data:
             del data['_id']
         return UserStats(str(user_id), **data)
-
-    def get_guild_stats(self, guild_id: int) -> GuildStats:
-        """Get the user's stats.
-
-        Parameters
-        ----------
-        guild_id:
-            The guild's ID.
-
-        Raises
-        ------
-        GuildNotFound:
-            The guild was not found.
-        NoMoreCreditsAvailable:
-            No more credits. Check /api on Discord.
-        CooldownError:
-            You are on cooldown.
-        """
-        data = self._get(f"guild/{guild_id}")
-        if "_id" in data:
-            del data['_id']
-        return GuildStats(str(guild_id), **data)

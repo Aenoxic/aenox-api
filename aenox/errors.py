@@ -30,20 +30,6 @@ class CooldownError(AenoXError):
         super().__init__("Cooldown for query.")
 
 
-class GuildNotFound(NotFound):
-    """Raised when the given guild ID is not found."""
-
-    def __init__(self):
-        super().__init__("Could not find the guild ID.")
-
-
-class NoGuildAccess(AenoXError):
-    """Raised when you do not have access to a guild."""
-
-    def __init__(self):
-        super().__init__("You are not a member of this guild.")
-
-
 class NoMoreCreditsAvailable(AenoXError):
     """Raised when you do not have enough credits for this operation."""
 
