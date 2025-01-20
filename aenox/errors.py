@@ -21,6 +21,12 @@ class UserNotFound(NotFound):
 
     def __init__(self):
         super().__init__("Could not find the user ID.")
+
+class UserNotInGuild(NotFound):
+    """Raised when the user is not on the Aenoxic Disocrd server."""
+
+    def __init__(self):
+        super().__init__("You're not on the Aenoxic Discord Server! You need to join it to use the API.")
         
         
 class CooldownError(AenoXError):

@@ -5,7 +5,7 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import InvalidAPIKey, NotFound, UserNotFound, CooldownError, NoMoreCreditsAvailable
+from .errors import InvalidAPIKey, NotFound, UserNotFound, CooldownError, NoMoreCreditsAvailable, UserNotInGuild
 from .models import UserStats
 
 BASE_URL = 'https://api.aenox.xyz/v1/'
@@ -62,6 +62,8 @@ class AenoXAPI:
                 raise UserNotFound()
             elif "credits" in message.lower():
                 raise NoMoreCreditsAvailable
+            elif "guild" in message.lower():
+                raise UserNotInGuild
             raise NotFound()
 
         if stream:
