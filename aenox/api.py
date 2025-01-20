@@ -96,12 +96,17 @@ class AenoXAPI:
             except (ValueError, TypeError):
                 return None
 
-        # Überprüfen, ob 'claimed' den Wert 0 hat
-        if data.get('claimed') == 0:
-            data['claimed'] = "Never"
-        else:
-            data['claimed'] = parse_datetime(str(data.get('claimed', '')))
 
-        if "_id" in data:
-            del data['_id']
-        return UserStats(str(user_id), **data)
+        if data:
+            for item in data:
+                if item['claimed'] == 0:
+                    item['claimed'] = "Never"
+                else:
+                    item['claimed'] = parse_datetime(str(item.get('claimed', '')))
+
+                if "_id" in item:
+                    del item['_id']
+
+            return UserStats(str(user_id), **data[0])
+        else:
+            raise ValueError("Die Liste data ist leer und kann nicht verarbeitet werden.")

@@ -14,6 +14,8 @@ class UserStats:
     """Returns the user's current daily streak."""
     max_streak: int
     """Returns the user's max daily streak."""
+    in_guild: bool
+    """Returns if the user is in the guild."""
 
     @property
     def id(self) -> str:
